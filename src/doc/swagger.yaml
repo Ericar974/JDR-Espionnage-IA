@@ -1,0 +1,91 @@
+swagger: "2.0"
+info:
+  title: Game API
+  description: API for managing games
+  version: "1.0.0"
+paths:
+  /api/characters/images:
+    get:
+      tags:
+        - Characters
+      summary: Get all character image URLs
+      description: Asynchronously retrieves all image URLs from the characters directory and returns them to the client.
+      responses:
+        '200':
+          description: An array of image URLs.
+        '500':
+          description: Error reading image directory.
+
+  /api/game/create:
+    post:
+      tags:
+        - Game
+      summary: Create a new game
+      description: This route creates a new game with given user IDs.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Object containing the user IDs to create a new game
+          required: true
+          schema:
+            type: object
+            properties:
+              usersId:
+                type: array
+                items:
+                  type: string
+      responses:
+        200:
+          description: Successfully created game
+          schema:
+            $ref: '#/definitions/GameSchema'
+        500:
+          description: Error creating game
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/game/{uuid}:
+    get:
+      tags:
+        - Game
+      summary: Retrieve a game by its UUID
+      description: This route retrieves a game by its UUID.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uuid
+          type: string
+          required: true
+          description: UUID of the game to retrieve
+      responses:
+        200:
+          description: Successfully retrieved game
+          schema:
+            $ref: '#/definitions/GameSchema'
+        404:
+          description: Game not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching game by UUID
+          schema:
+            $ref: '#/definitions/GetApiError'
+definitions:
+  GameSchema:
+    type: object
+    required:
+      - usersId
+    properties:
+      usersId:
+        type: array
+        items:
+          type: string
+  GetApiError:
+    type: object
+    properties:
+      message:
+        type: string

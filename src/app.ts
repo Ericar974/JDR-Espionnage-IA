@@ -17,9 +17,13 @@ import sequelize from './sequelize';
 import Mission from './models/mission';
 
 // Import routes
-import missionsRoutes from './routes/missionsRoutes';
-import gamesRoutes from './routes/gamesRoutes';
-import charactersRoutes from './routes/charactersRoutes';
+import missionsRoutes from './routes/mission/mission';
+import gamesRoutes from './routes/game/game';
+import charactersRoutes from './routes/character/character';
+
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./src/doc/swagger.yaml');
 
 /**
  * Create express instance
@@ -31,13 +35,19 @@ const app = express();
  */
 const PORT: number = +(process.env.PORT ?? 3000);
 
+
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Use the imported routes
 app.use('/api/missions', missionsRoutes);
-app.use('/api/games', gamesRoutes);
+app.use('/api/game', gamesRoutes);
 app.use('/api/characters', charactersRoutes);
+
+app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
 
 app.listen(PORT, () => {
   console.log(`server launch on http://localhost:${PORT}`);

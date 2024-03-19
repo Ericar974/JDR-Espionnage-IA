@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
-import { GetApiError } from '../api-schema/error.t';
-import { GameSchema } from '../api-schema/game.t';
-import Game from '../models/game';
+import Game from '../../models/game';
+import {GameSchema} from "../../api-schema/game.t";
+import {GetApiError} from "../../api-schema/error.t";
 
 const router = express.Router();
 
@@ -11,7 +11,8 @@ const router = express.Router();
  *
  * @param {Function} async (req, res) - The asynchronous route handler function.
  * @returns {GameSchema[]} Array of Mission objects.
- */
+ *
+*/
 router.get(
   '/create',
   async (req: Request, res: Response<GameSchema | GetApiError>) => {
