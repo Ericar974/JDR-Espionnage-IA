@@ -10,7 +10,6 @@
 
 import 'dotenv/config';
 import express from 'express';
-import fs from 'fs';
 import path from 'path';
 import countries from './countries';
 
@@ -20,6 +19,7 @@ import Mission from './models/mission';
 // Import routes
 import missionsRoutes from './routes/missionsRoutes';
 import gamesRoutes from './routes/gamesRoutes';
+import charactersRoutes from './routes/charactersRoutes';
 
 /**
  * Create express instance
@@ -37,43 +37,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Use the imported routes
 app.use('/api/missions', missionsRoutes);
 app.use('/api/games', gamesRoutes);
-
-/**
- * GET route to get all character url images.
- *
- * This route asynchronously retrieves all image URLs from the characters directory
- * and returns them to the client.
- *
- * @param {Function} async (req, res) - The asynchronous route handler function.
- */
-app.get('/api/character-images', async (req, res) => {
-  // Define the directory path for character images
-  const imagesDirectory = path.join(__dirname, '../public/images/characters');
-
-  // Read the directory contents
-  fs.readdir(imagesDirectory, (err, files) => {
-    if (err) {
-      // Log and return an error message if reading the directory fails
-      console.error('Error reading image directory:', err);
-      return res
-        .status(500)
-        .json({ message: 'Error reading image directory.' });
-    }
-
-    // Filter the list to include only image files based on their extensions
-    const imageFiles = files.filter((file) =>
-      /\.(jpg|jpeg|png|gif)$/i.test(file)
-    );
-
-    // Construct URLs for each image file
-    const urls = imageFiles.map(
-      (file) => `${req.protocol}://${req.get('host')}/images/characters/${file}`
-    );
-
-    // Return the list of image URLs to the client
-    res.json(urls);
-  });
-});
+app.use('/api/characters', charactersRoutes);
 
 app.listen(PORT, () => {
   console.log(`server launch on http://localhost:${PORT}`);
@@ -85,6 +49,8 @@ sequelize.sync({ force: true }).then(() => {
   Mission.create({
     country: countries.FR,
     place: 'Eiffel Tower',
-    date: currentDate.setTime(currentDate.getTime() + 24 * 3600 * 1000),
+    date: new Date(
+      currentDate.setTime(currentDate.getTime() + 24 * 3600 * 1000)
+    ),
   });
 });
