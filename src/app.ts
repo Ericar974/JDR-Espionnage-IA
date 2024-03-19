@@ -1,3 +1,13 @@
+/**
+ * Main Application File: app.js
+ *
+ * This file initializes the Express application, sets up middleware for JSON parsing and serving static files,
+ * and defines the application's routes. It imports mission and game routes from separate files for better organization,
+ * and includes a route for dynamically serving character images from a specified directory. Additionally, it listens
+ * on a port defined in the environment variables for incoming connections. This file also triggers the database
+ * synchronization and initial data setup for missions.
+ */
+
 import 'dotenv/config';
 import express from 'express';
 import path from 'path';
@@ -5,7 +15,11 @@ import countries from './countries';
 
 import sequelize from './sequelize';
 import Mission from './models/mission';
-import Game from './models/game';
+
+// Import routes
+import missionsRoutes from './routes/missionsRoutes';
+import gamesRoutes from './routes/gamesRoutes';
+import charactersRoutes from './routes/charactersRoutes';
 
 /**
  * Create express instance
@@ -20,112 +34,10 @@ const PORT: number = +(process.env.PORT ?? 3000);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
-/**
- * GET route to retrieve missions.
- *
- * @param {Function} async (req, res) - The asynchronous route handler function.
- */
-app.get('/api/missions', async (req, res) => {
-  try {
-    // Find all missions in database
-    const missions = await Mission.findAll();
-    res.json(missions);
-  } catch (error) {
-    // Log the error in case the request fails and return a 500 error message.
-    console.error('Error fetch missions :', error);
-    res.status(500).json({
-      message: 'Error fetch missions.',
-    });
-  }
-});
-
-/**
- * GET route to retrieve a mission by its UUID.
- *
- * @param {string} uuid '/missions/:uuid' - The path of the route with 'uuid' as a parameter.
- * @param {Function} async (req, res) - The asynchronous route handler function.
- */
-app.get('/api/missions/:uuid', async (req, res) => {
-  try {
-    // Extract the UUID from the route parameters.
-    const { uuid } = req.params;
-
-    // Search for the mission by its UUID in the database.
-    const mission = await Mission.findOne({
-      where: {
-        uuid,
-      },
-    });
-
-    // If the mission is not found, return a 404 error message.
-    if (!mission) {
-      return res.status(404).json({
-        message: 'Mission not found.',
-      });
-    }
-
-    // If the mission is found, return the mission to the client.
-    res.json(mission);
-  } catch (error) {
-    // Log the error in case the request fails and return a 500 error message.
-    console.error('Error fetching mission by UUID:', error);
-    res.status(500).json({
-      message: 'Error fetching mission by UUID.',
-    });
-  }
-});
-
-/**
- * GET route to create a game
- *
- * @param {Function} async (req, res) - The asynchronous route handler function.
- */
-app.get('/api/game/create', async (req, res) => {
-  const body = req.body;
-
-  const usersId = body.usersId;
-
-  const game = await Game.create({
-    usersId,
-  });
-  res.json(game);
-});
-
-/**
- * GET route to get a game by its UUID.
- *
- * @param {string} uuid '/game/:uuid' - The path of the route with 'uuid' as a parameter.
- * @param {Function} async (req, res) - The asynchronous route handler function.
- */
-app.get('/api/game/:uuid', async (req, res) => {
-  try {
-    // Extract the UUID from the route parameters.
-    const { uuid } = req.params;
-
-    // Search for the game by its UUID in the database.
-    const game = await Game.findOne({
-      where: {
-        uuid,
-      },
-    });
-
-    // If the game is not found, return a 404 error message.
-    if (!game) {
-      return res.status(404).json({
-        message: 'Game not found.',
-      });
-    }
-
-    // If the game is found, return the game to the client.
-    res.json(game);
-  } catch (error) {
-    // Log the error in case the request fails and return a 500 error message.
-    console.error('Error fetching game by UUID:', error);
-    res.status(500).json({
-      message: 'Error fetching game by UUID.',
-    });
-  }
-});
+// Use the imported routes
+app.use('/api/missions', missionsRoutes);
+app.use('/api/games', gamesRoutes);
+app.use('/api/characters', charactersRoutes);
 
 app.listen(PORT, () => {
   console.log(`server launch on http://localhost:${PORT}`);
@@ -137,6 +49,8 @@ sequelize.sync({ force: true }).then(() => {
   Mission.create({
     country: countries.FR,
     place: 'Eiffel Tower',
-    date: currentDate.setTime(currentDate.getTime() + 24 * 3600 * 1000),
+    date: new Date(
+      currentDate.setTime(currentDate.getTime() + 24 * 3600 * 1000)
+    ),
   });
 });

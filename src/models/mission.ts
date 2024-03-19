@@ -1,11 +1,14 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../sequelize';
 import { v4 as uuidv4 } from 'uuid';
+import { MissionSchema } from '../api-schema/mission.t';
 
 const prefix: String = 'mis';
 
-export default sequelize.define('Mission', {
-  uuid: {
+interface MissionInstance extends Model<MissionSchema>, MissionSchema {}
+
+export default sequelize.define<MissionInstance>('Mission', {
+  id: {
     type: DataTypes.UUID,
     defaultValue: () => `${prefix}-${uuidv4()}`,
     primaryKey: true,

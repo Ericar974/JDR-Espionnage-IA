@@ -1,11 +1,14 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from '../sequelize';
 import { v4 as uuidv4 } from 'uuid';
+import { GameSchema } from '../api-schema/game.t';
 
 const prefix: String = 'g';
 
-export default sequelize.define('Game', {
-  uuid: {
+interface GameInstance extends Model<GameSchema>, GameSchema {}
+
+export default sequelize.define<GameInstance>('Game', {
+  id: {
     type: DataTypes.UUID,
     defaultValue: () => `${prefix}-${uuidv4()}`,
     primaryKey: true,
