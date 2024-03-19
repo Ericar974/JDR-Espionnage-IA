@@ -26,4 +26,8 @@ export default sequelize.define('Game', {
     defaultValue: () => [],
     allowNull: false,
   },
+  scenario: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });

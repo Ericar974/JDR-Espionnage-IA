@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import path from 'path';
 import countries from './countries';
 
 import sequelize from './sequelize';
@@ -17,13 +18,14 @@ const app = express();
 const PORT: number = +(process.env.PORT ?? 3000);
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../public')));
 
 /**
  * GET route to retrieve missions.
  *
  * @param {Function} async (req, res) - The asynchronous route handler function.
  */
-app.get('/missions', async (req, res) => {
+app.get('/api/missions', async (req, res) => {
   try {
     // Find all missions in database
     const missions = await Mission.findAll();
@@ -43,7 +45,7 @@ app.get('/missions', async (req, res) => {
  * @param {string} uuid '/missions/:uuid' - The path of the route with 'uuid' as a parameter.
  * @param {Function} async (req, res) - The asynchronous route handler function.
  */
-app.get('/missions/:uuid', async (req, res) => {
+app.get('/api/missions/:uuid', async (req, res) => {
   try {
     // Extract the UUID from the route parameters.
     const { uuid } = req.params;
@@ -78,7 +80,7 @@ app.get('/missions/:uuid', async (req, res) => {
  *
  * @param {Function} async (req, res) - The asynchronous route handler function.
  */
-app.get('/game/create', async (req, res) => {
+app.get('/api/game/create', async (req, res) => {
   const body = req.body;
 
   const usersId = body.usersId;
@@ -95,7 +97,7 @@ app.get('/game/create', async (req, res) => {
  * @param {string} uuid '/game/:uuid' - The path of the route with 'uuid' as a parameter.
  * @param {Function} async (req, res) - The asynchronous route handler function.
  */
-app.get('/game/:uuid', async (req, res) => {
+app.get('/api/game/:uuid', async (req, res) => {
   try {
     // Extract the UUID from the route parameters.
     const { uuid } = req.params;
