@@ -1,12 +1,20 @@
-const express = require('express');
-require('dotenv').config();
+import 'dotenv/config';
+import express from 'express';
+import countries from './countries';
 
+import sequelize from './sequelize';
+import Mission from './models/mission';
+import Game from './models/game';
+
+/**
+ * Create express instance
+ */
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-const sequelize = require('./sequelize');
-const Mission = require('./models/mission');
-const countries = require('./countries');
+/**
+ * Setup project launch port
+ */
+const PORT: number = +(process.env.PORT ?? 3000);
 
 app.use(express.json());
 
@@ -61,6 +69,58 @@ app.get('/missions/:uuid', async (req, res) => {
     console.error('Error fetching mission by UUID:', error);
     res.status(500).json({
       message: 'Error fetching mission by UUID.',
+    });
+  }
+});
+
+/**
+ * GET route to create a game
+ *
+ * @param {Function} async (req, res) - The asynchronous route handler function.
+ */
+app.get('/game/create', async (req, res) => {
+  const body = req.body;
+
+  const usersId = body.usersId;
+
+  const game = await Game.create({
+    usersId,
+  });
+  res.json(game);
+});
+
+/**
+ * GET route to get a game by its UUID.
+ *
+ * @param {string} uuid '/game/:uuid' - The path of the route with 'uuid' as a parameter.
+ * @param {Function} async (req, res) - The asynchronous route handler function.
+ */
+app.get('/game/:uuid', async (req, res) => {
+  try {
+    // Extract the UUID from the route parameters.
+    const { uuid } = req.params;
+
+    // Search for the game by its UUID in the database.
+    const game = await Game.findOne({
+      where: {
+        uuid,
+      },
+    });
+
+    // If the game is not found, return a 404 error message.
+    if (!game) {
+      return res.status(404).json({
+        message: 'Game not found.',
+      });
+    }
+
+    // If the game is found, return the game to the client.
+    res.json(game);
+  } catch (error) {
+    // Log the error in case the request fails and return a 500 error message.
+    console.error('Error fetching game by UUID:', error);
+    res.status(500).json({
+      message: 'Error fetching game by UUID.',
     });
   }
 });

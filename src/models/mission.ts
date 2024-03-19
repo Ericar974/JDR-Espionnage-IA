@@ -1,11 +1,13 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../sequelize');
-const { v4: uuidv4 } = require('uuid');
+import { DataTypes } from 'sequelize';
+import sequelize from '../sequelize';
+import { v4 as uuidv4 } from 'uuid';
 
-const User = sequelize.define('Missions', {
+const prefix: String = 'mis';
+
+export default sequelize.define('Mission', {
   uuid: {
     type: DataTypes.UUID,
-    defaultValue: () => uuidv4(),
+    defaultValue: () => `${prefix}-${uuidv4()}`,
     primaryKey: true,
     allowNull: false,
     unique: true,
@@ -24,5 +26,3 @@ const User = sequelize.define('Missions', {
     allowNull: false,
   },
 });
-
-module.exports = User;

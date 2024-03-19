@@ -2,4 +2,4 @@ const countries = {
   FR: 'France',
 };
 
-module.exports = countries;
+export default countries;
