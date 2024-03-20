@@ -62,7 +62,12 @@ paths:
         200:
           description: Successfully created game
           schema:
-            $ref: '#/definitions/GameSchema'
+            type: object
+            required:
+              - gameId
+            properties:
+              gameId:
+                type: string
         500:
           description: Error creating game
           schema:
