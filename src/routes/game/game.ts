@@ -53,6 +53,11 @@ router.post(
         missions: [],
       });
 
+      // If empty input
+      if (!user) {
+        return res.status(404).json({ message: 'Empty input' });
+      }
+
       // Respond with the created game object
       res.json({
         gameId: game.id,
@@ -79,8 +84,8 @@ router.get(
       // Find the game by its UUID
       const game = await Game.findOne({ where: { id: uuid } });
 
+      // If no game is found, respond with a 404
       if (!game) {
-        // If no game is found, respond with a 404
         return res.status(404).json({ message: 'Game not found.' });
       }
 

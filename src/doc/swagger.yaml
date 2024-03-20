@@ -236,10 +236,8 @@ definitions:
     properties:
       id:
         type: string
-      users:
-        type: array
-        items:
-          $ref: '#/definitions/CharacterSchema'
+      character:
+        $ref: '#/definitions/CharacterSchema'
   MissionSchema:
     type: object
     properties:
