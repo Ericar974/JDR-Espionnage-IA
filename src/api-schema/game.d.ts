@@ -20,6 +20,6 @@ export interface GameSchema {
   // Array of Multiple narrative scenario of the game; structured according to the MissionSchema.
   missions: MissionSchema[];
 
-  // The game master (GM) guiding the game, represented by a UserSchema.
-  gm: UserSchema;
+  // The game master (GM) UUID guiding the game.
+  gmId: string | null;
 }

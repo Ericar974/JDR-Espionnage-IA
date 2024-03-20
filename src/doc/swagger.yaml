@@ -56,7 +56,12 @@ paths:
           name: body
           description: Object containing the user IDs to create a new game
           schema:
-            $ref: '#/definitions/UserSchema'
+            type: object
+            required:
+              - userId
+            properties:
+              userId:
+                type: string
           required: true
       responses:
         200:

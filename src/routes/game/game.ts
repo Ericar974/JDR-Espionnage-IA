@@ -39,23 +39,23 @@ router.post(
     req: Request<
       any,
       { gameId: string | null } | null | GetApiError,
-      { user: UserSchema }
+      { userId: string }
     >,
     res: Response<{ gameId: string | null } | null | GetApiError>
   ) => {
     try {
-      const { user } = req.body; // Assuming 'users' is needed to create a game
+      const { userId } = req.body;
 
       // Create a new game instance
       const game: GameSchema = await Game.create({
-        gm: user,
+        gmId: userId,
         users: [],
         missions: [],
       });
 
       // If empty input
-      if (!user) {
-        return res.status(404).json({ message: 'Empty input' });
+      if (!userId) {
+        return res.status(404).json({ message: 'Empty input "userId"' });
       }
 
       // Respond with the created game object
@@ -167,7 +167,7 @@ router.get(
       // Filter games contain user (gm or simple user)
       games.filter((game) => {
         return (
-          game.users?.find((item) => item.id === uuid) || game.gm.id === uuid
+          game.users?.find((item) => item.id === uuid) || game.gmId === uuid
         );
       });
 
