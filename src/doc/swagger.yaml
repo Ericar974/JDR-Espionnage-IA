@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  title: Game API
+  title: Hawk Api
   description: API for managing games
   version: "1.0.0"
 paths:
