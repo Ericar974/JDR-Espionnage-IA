@@ -214,36 +214,71 @@ paths:
           schema:
             $ref: '#/definitions/GetApiError'
 definitions:
-  GameSchema:
+  CharacterSchema:
     type: object
     properties:
-      users:
-        type: object
-        items:
-          type: string
-  MissionSchema:
-    type: object
-    required:
-      - users
-    properties:
-      users:
-        type: array
-        items:
-          type: string
+      id:
+        type: string
+      userId:
+        type: string
+      imageUrl:
+        type: string
+      coverName:
+        type: string
+      description:
+        type: string
+      createdAt:
+        type: date
+      deletedAt:
+        type: date
   UserSchema:
     type: object
     properties:
+      id:
+        type: string
       users:
         type: array
         items:
           $ref: '#/definitions/CharacterSchema'
-  CharacterSchema:
+  MissionSchema:
     type: object
     properties:
-      aaa:
+      id:
+        type: string
+      name:
+        type: string
+      country:
+        type: string
+      scenario:
+        type: string
+      status:
+        type: string
+        enum: [Waiting, Playing, Completed]
+      place:
+        type: string
+      date:
+        type: string
+        format: date-time
+  GameSchema:
+    type: object
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      status:
+        type: string
+        enum: [Waiting, Playing, Completed]
+      users:
         type: array
         items:
-          type: string
+          $ref: '#/definitions/UserSchema'
+      missions:
+        type: array
+        items:
+          $ref: '#/definitions/MissionSchema'
+      gm:
+        $ref: '#/definitions/UserSchema'
   GetApiError:
     type: object
     properties:
