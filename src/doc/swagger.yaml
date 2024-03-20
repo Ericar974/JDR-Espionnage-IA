@@ -1,0 +1,250 @@
+# This Swagger documentation provides an overview of the API endpoints available in Hawk Api.
+# For a more detailed interactive documentation, visit the `/api-doc` route.
+swagger: '2.0'
+info:
+  title: Hawk Api
+  description: API for managing games
+  version: '1.0.0'
+paths:
+  /api/character/images:
+    get:
+      tags:
+        - Characters
+      summary: Get all character image URLs
+      description: Asynchronously retrieves all image URLs from the characters directory and returns them to the client.
+      responses:
+        '200':
+          description: An array of image URLs.
+        '500':
+          description: Error reading image directory.
+
+  /api/game/getAll:
+    get:
+      tags:
+        - Game
+      summary: Retrieve all games
+      description: This route retrieves all games
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successfully retrieved games
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GameSchema'
+        404:
+          description: Games not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching games
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/game/create:
+    post:
+      tags:
+        - Game
+      summary: Create a new game
+      description: This route creates a new game with given user IDs.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Object containing the user IDs to create a new game
+          required: true
+          schema:
+            type: object
+            properties:
+              usersId:
+                type: array
+                items:
+                  type: string
+      responses:
+        200:
+          description: Successfully created game
+          schema:
+            $ref: '#/definitions/GameSchema'
+        500:
+          description: Error creating game
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/game/{uuid}:
+    get:
+      tags:
+        - Game
+      summary: Retrieve a game by its UUID
+      description: This route retrieves a game by its UUID.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uuid
+          type: string
+          required: true
+          description: UUID of the game to retrieve
+      responses:
+        200:
+          description: Successfully retrieved game
+          schema:
+            $ref: '#/definitions/GameSchema'
+        404:
+          description: Game not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching game by UUID
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/game/{uuid}/addUser:
+    put:
+      tags:
+        - Game
+      summary: Add user to game by its UUID
+      description: This route add user to game by its UUID
+      produces:
+        - application/json
+      requestBody:
+        description: Create a new pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UserSchema'
+        required: true
+      parameters:
+        - in: path
+          name: uuid
+          type: string
+          required: true
+          description: UUID of the game to retrieve
+      responses:
+        200:
+          description: Successfully add user
+          schema:
+            $ref: '#/definitions/GameSchema'
+        404:
+          description: Game not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching game by UUID
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/game/user/{uuid}:
+    get:
+      tags:
+        - Game
+      summary: Retrieve user games by user UUID
+      description: This route retrieves user games by user UUID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uuid
+          type: string
+          required: true
+          description: UUID of the game to retrieve
+      responses:
+        200:
+          description: Successfully retrieved user games
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GameSchema'
+        404:
+          description: Game not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching game by UUID
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/mission/{uuid}:
+    get:
+      tags:
+        - Mission
+      summary: Retrieve a mission by its UUID
+      description: This route retrieves a mission by its UUID.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uuid
+          type: string
+          required: true
+          description: UUID of the mission to retrieve
+      responses:
+        200:
+          description: Successfully retrieved mission
+          schema:
+            $ref: '#/definitions/MissionSchema'
+        404:
+          description: Mission not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching mission by UUID
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/mission/getAll:
+    get:
+      tags:
+        - Mission
+      summary: Retrieve all missions
+      description: This route retrieves all missions
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successfully retrieved missions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MissionSchema'
+        404:
+          description: Missions not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching missions
+          schema:
+            $ref: '#/definitions/GetApiError'
+definitions:
+  GameSchema:
+    type: object
+    properties:
+      users:
+        type: object
+        items:
+          type: string
+  MissionSchema:
+    type: object
+    required:
+      - users
+    properties:
+      users:
+        type: array
+        items:
+          type: string
+  UserSchema:
+    type: object
+    properties:
+      users:
+        type: object
+        items:
+          $ref: '#/definitions/CharacterSchema'
+  CharacterSchema:
+    type: object
+    properties:
+      aaa:
+        type: array
+        items:
+          type: string
+  GetApiError:
+    type: object
+    properties:
+      message:
+        type: string

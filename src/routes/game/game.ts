@@ -1,12 +1,29 @@
 import express, { Request, Response } from 'express';
-import { globalAgent } from 'http';
-import { CharacterSchema } from '../api-schema/character.t';
-import { GetApiError } from '../api-schema/error.t';
-import { GameSchema } from '../api-schema/game.t';
-import { UserSchema } from '../api-schema/user.t';
-import Game from '../models/game';
+import Game from '../../models/game';
+import { GetApiError } from '../../api-schema/error';
+import { GameSchema } from '../../api-schema/game';
+import { UserSchema } from '../../api-schema/user';
 
 const router = express.Router();
+
+/**
+ * GET route to get all games.
+ *
+ * @param {Function} async (req, res) - The asynchronous route handler function.
+ * @returns {MissionSchema[]} Array of Game objects.
+ */
+router.get(
+  '/getAll',
+  async (req: Request, res: Response<GameSchema[] | GetApiError>) => {
+    try {
+      const games = await Game.findAll();
+      res.json(games);
+    } catch (error) {
+      console.error('Error fetch games:', error);
+      res.status(500).json({ message: 'Error fetch games.' });
+    }
+  }
+);
 
 /**
  * Route to create a new game.
@@ -14,15 +31,19 @@ const router = express.Router();
  *
  * @param {Function} async (req, res) - The asynchronous route handler function.
  * @returns {GameSchema[]} Array of Mission objects.
+ *
  */
-router.get(
+router.post(
   '/create',
-  async (req: Request, res: Response<String | null | GetApiError>) => {
+  async (
+    req: Request<any, string | null | GetApiError, { user: UserSchema }>,
+    res: Response<string | null | GetApiError>
+  ) => {
     try {
-      const { users } = req.body; // Assuming 'users' is needed to create a game
+      const { user } = req.body; // Assuming 'users' is needed to create a game
 
       // Create a new game instance
-      const game: GameSchema = await Game.create({ users });
+      const game: GameSchema = await Game.create({ gm: user, users: [] });
 
       // Respond with the created game object
       res.json(game.id);
@@ -73,14 +94,14 @@ router.put(
   async (
     req: Request<
       any,
-      String | null | GameSchema | GetApiError,
+      string | null | GameSchema | GetApiError,
       { user: UserSchema }
     >,
-    res: Response<String | null | GameSchema | GetApiError>
+    res: Response<string | null | GameSchema | GetApiError>
   ) => {
     try {
       const { uuid } = req.params;
-      const { user } = req.body; // Assuming 'users' is needed to create a game
+      const { user } = req.body;
 
       // Find the game by its UUID
       const game = await Game.findOne({ where: { id: uuid } });
@@ -100,6 +121,7 @@ router.put(
         return res.status(404).json({ message: 'User already registered.' });
       }
 
+      // Update and save model to db
       game.users = [...game.users, user];
       await game.save();
 
@@ -120,7 +142,26 @@ router.put(
  */
 router.get(
   '/user/:uuid',
-  async (req: Request, res: Response<String | GetApiError>) => {}
+  async (req: Request, res: Response<GameSchema[] | GetApiError>) => {
+    try {
+      const { uuid } = req.params;
+
+      // Get all games
+      const games = await Game.findAll();
+
+      // Filter games contain user (gm or simple user)
+      games.filter((game) => {
+        return (
+          game.users?.find((item) => item.id === uuid) || game.gm.id === uuid
+        );
+      });
+
+      res.json(games);
+    } catch (error) {
+      console.error('Error fetch games:', error);
+      res.status(500).json({ message: 'Error fetch games.' });
+    }
+  }
 );
 
 export default router;

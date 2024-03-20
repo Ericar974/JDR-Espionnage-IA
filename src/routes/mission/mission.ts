@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
-import { GetApiError } from '../api-schema/error.t';
-import { MissionSchema } from '../api-schema/mission.t';
-import Mission from '../models/mission';
+import Mission from '../../models/mission';
+import { GetApiError } from '../../api-schema/error';
+import { MissionSchema } from '../../api-schema/mission';
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ const router = express.Router();
  * @returns {MissionSchema[]} Array of Mission objects.
  */
 router.get(
-  '/',
+  '/getAll',
   async (req: Request, res: Response<MissionSchema[] | GetApiError>) => {
     try {
       const missions = await Mission.findAll();
