@@ -20,7 +20,7 @@ router.get(
       res.json(games);
     } catch (error) {
       console.error('Error fetch games:', error);
-      res.status(500).json({ message: 'Error fetch games.' });
+      res.status(400).json({ message: 'Error fetch games.' });
     }
   }
 );
@@ -55,7 +55,7 @@ router.post(
 
       // If empty input
       if (!userId) {
-        return res.status(404).json({ message: 'Empty input "userId"' });
+        return res.status(400).json({ message: 'Empty input "userId"' });
       }
 
       // Respond with the created game object
@@ -64,7 +64,7 @@ router.post(
       });
     } catch (error) {
       console.error('Error creating game:', error);
-      res.status(500).json({ message: 'Error creating game.' });
+      res.status(400).json({ message: 'Error creating game.' });
     }
   }
 );
@@ -86,14 +86,14 @@ router.get(
 
       // If no game is found, respond with a 404
       if (!game) {
-        return res.status(404).json({ message: 'Game not found.' });
+        return res.status(400).json({ message: 'Game not found.' });
       }
 
       // Respond with the found game object
       res.json(game);
     } catch (error) {
       console.error('Error fetching game by UUID:', error);
-      res.status(500).json({ message: 'Error fetching game by UUID.' });
+      res.status(400).json({ message: 'Error fetching game by UUID.' });
     }
   }
 );
@@ -123,17 +123,17 @@ router.put(
 
       // If no game is found, respond with a 404
       if (!game) {
-        return res.status(404).json({ message: 'Game not found.' });
+        return res.status(400).json({ message: 'Game not found.' });
       }
 
       // If empty input
       if (!user || !user.id || !user.character) {
-        return res.status(404).json({ message: 'Empty input' });
+        return res.status(400).json({ message: 'Empty input' });
       }
 
       // Already user
       if (game.users.find((item) => item.id === user.id)) {
-        return res.status(404).json({ message: 'User already registered.' });
+        return res.status(400).json({ message: 'User already registered.' });
       }
 
       // Update and save model to db
@@ -144,7 +144,7 @@ router.put(
       res.json(game);
     } catch (error) {
       console.error('Error fetching game by UUID:', error);
-      res.status(500).json({ message: 'Error fetching game by UUID.' });
+      res.status(400).json({ message: 'Error fetching game by UUID.' });
     }
   }
 );
@@ -174,7 +174,7 @@ router.get(
       res.json(games);
     } catch (error) {
       console.error('Error fetch games:', error);
-      res.status(500).json({ message: 'Error fetch games.' });
+      res.status(400).json({ message: 'Error fetch games.' });
     }
   }
 );

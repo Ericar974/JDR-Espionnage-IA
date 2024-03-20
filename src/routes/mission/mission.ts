@@ -38,13 +38,13 @@ router.get(
       const mission = await Mission.findOne({ where: { id: uuid } });
 
       if (!mission) {
-        return res.status(404).json({ message: 'Mission not found.' });
+        return res.status(400).json({ message: 'Mission not found.' });
       }
 
       res.json(mission);
     } catch (error) {
       console.error('Error fetching mission by UUID:', error);
-      res.status(500).json({ message: 'Error fetching mission by UUID.' });
+      res.status(400).json({ message: 'Error fetching mission by UUID.' });
     }
   }
 );
