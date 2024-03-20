@@ -67,8 +67,9 @@ sequelize.sync({ force: true }).then(() => {
   const currentDate = new Date();
   Mission.create({
     country: countries.FR,
+    city: 'Paris',
     place: 'Eiffel Tower',
-    scenario: 'scenrario de test',
+    scenario: 'scenario de test',
     date: new Date(
       currentDate.setTime(currentDate.getTime() + 24 * 3600 * 1000)
     ),

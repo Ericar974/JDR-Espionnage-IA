@@ -48,7 +48,12 @@ export default sequelize.define<MissionInstance>('Mission', {
     defaultValue: 'Waiting',
     allowNull: false,
   },
-  // Specific place of the mission within the country. This field is also required.
+  // Specific city of the mission within the country.
+  city: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  // Specific place of the mission within the country.
   place: {
     type: DataTypes.STRING,
     allowNull: false,
