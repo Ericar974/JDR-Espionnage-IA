@@ -55,14 +55,9 @@ paths:
         - in: body
           name: body
           description: Object containing the user IDs to create a new game
-          required: true
           schema:
-            type: object
-            properties:
-              usersId:
-                type: array
-                items:
-                  type: string
+            $ref: '#/definitions/UserSchema'
+          required: true
       responses:
         200:
           description: Successfully created game
@@ -117,7 +112,7 @@ paths:
           description: UUID of the game to retrieve
         - in: body
           name: body
-          description: Create a new pet in the store
+          description: Add user to game
           schema:
             $ref: '#/definitions/UserSchema'
           required: true
