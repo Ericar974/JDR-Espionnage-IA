@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import Game from '../../models/game';
-import {GameSchema} from "../../api-schema/game.t";
-import {GetApiError} from "../../api-schema/error.t";
+import {GetApiError} from "../../api-schema/error";
+import {GameSchema} from "../../api-schema/game";
 
 const router = express.Router();
 

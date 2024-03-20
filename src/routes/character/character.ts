@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import express, { Request, Response } from 'express';
-import { GetApiError } from '../../api-schema/error.t';
+import {GetApiError} from "../../api-schema/error";
 
 const router = express.Router();
 

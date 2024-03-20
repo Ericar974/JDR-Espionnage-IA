@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express';
 import Mission from '../../models/mission';
-import {MissionSchema} from "../../api-schema/mission.t";
-import {GetApiError} from "../../api-schema/error.t";
+import {GetApiError} from "../../api-schema/error";
+import {MissionSchema} from "../../api-schema/mission";
+
 
 const router = express.Router();
 
