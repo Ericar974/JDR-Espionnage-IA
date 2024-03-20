@@ -49,9 +49,9 @@ export default sequelize.define<GameInstance>('Game', {
     defaultValue: () => [],
     allowNull: false,
   },
-  // Information about the game master (GM), allowing for structured data storage.
-  gm: {
-    type: DataTypes.JSONB,
+  // UUID of the game master (GM).
+  gmId: {
+    type: DataTypes.STRING,
     allowNull: true,
   },
 });
