@@ -1,12 +1,12 @@
 # This Swagger documentation provides an overview of the API endpoints available in Hawk Api.
 # For a more detailed interactive documentation, visit the `/api-doc` route.
-swagger: "2.0"
+swagger: '2.0'
 info:
   title: Hawk Api
   description: API for managing games
-  version: "1.0.0"
+  version: '1.0.0'
 paths:
-  /api/characters/images:
+  /api/character/images:
     get:
       tags:
         - Characters
@@ -18,6 +18,29 @@ paths:
         '500':
           description: Error reading image directory.
 
+  /api/game/getAll:
+    get:
+      tags:
+        - Game
+      summary: Retrieve all games
+      description: This route retrieves all games
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successfully retrieved games
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GameSchema'
+        404:
+          description: Games not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching games
+          schema:
+            $ref: '#/definitions/GetApiError'
   /api/game/create:
     post:
       tags:
@@ -76,16 +99,186 @@ paths:
           description: Error fetching game by UUID
           schema:
             $ref: '#/definitions/GetApiError'
+  /api/game/{uuid}/addUser:
+    put:
+      tags:
+        - Game
+      summary: Add user to game by its UUID
+      description: This route add user to game by its UUID
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: uuid
+          type: string
+          required: true
+          description: UUID of the game to retrieve
+        - in: body
+          name: body
+          description: Create a new pet in the store
+          schema:
+            $ref: '#/definitions/UserSchema'
+          required: true
+      responses:
+        200:
+          description: Successfully add user
+          schema:
+            $ref: '#/definitions/GameSchema'
+        404:
+          description: Game not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching game by UUID
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/game/user/{uuid}:
+    get:
+      tags:
+        - Game
+      summary: Retrieve user games by user UUID
+      description: This route retrieves user games by user UUID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uuid
+          type: string
+          required: true
+          description: UUID of the game to retrieve
+      responses:
+        200:
+          description: Successfully retrieved user games
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/GameSchema'
+        404:
+          description: Game not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching game by UUID
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/mission/{uuid}:
+    get:
+      tags:
+        - Mission
+      summary: Retrieve a mission by its UUID
+      description: This route retrieves a mission by its UUID.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: uuid
+          type: string
+          required: true
+          description: UUID of the mission to retrieve
+      responses:
+        200:
+          description: Successfully retrieved mission
+          schema:
+            $ref: '#/definitions/MissionSchema'
+        404:
+          description: Mission not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching mission by UUID
+          schema:
+            $ref: '#/definitions/GetApiError'
+  /api/mission/getAll:
+    get:
+      tags:
+        - Mission
+      summary: Retrieve all missions
+      description: This route retrieves all missions
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successfully retrieved missions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MissionSchema'
+        404:
+          description: Missions not found
+          schema:
+            $ref: '#/definitions/GetApiError'
+        500:
+          description: Error fetching missions
+          schema:
+            $ref: '#/definitions/GetApiError'
 definitions:
-  GameSchema:
+  CharacterSchema:
     type: object
-    required:
-      - usersId
     properties:
-      usersId:
+      id:
+        type: string
+      userId:
+        type: string
+      imageUrl:
+        type: string
+      coverName:
+        type: string
+      description:
+        type: string
+      createdAt:
+        type: date
+      deletedAt:
+        type: date
+  UserSchema:
+    type: object
+    properties:
+      id:
+        type: string
+      users:
         type: array
         items:
-          type: string
+          $ref: '#/definitions/CharacterSchema'
+  MissionSchema:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      country:
+        type: string
+      scenario:
+        type: string
+      status:
+        type: string
+        enum: [Waiting, Playing, Completed]
+      place:
+        type: string
+      date:
+        type: string
+        format: date-time
+  GameSchema:
+    type: object
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      status:
+        type: string
+        enum: [Waiting, Playing, Completed]
+      users:
+        type: array
+        items:
+          $ref: '#/definitions/UserSchema'
+      missions:
+        type: array
+        items:
+          $ref: '#/definitions/MissionSchema'
+      gm:
+        $ref: '#/definitions/UserSchema'
   GetApiError:
     type: object
     properties:
