@@ -1,3 +1,5 @@
+# This Swagger documentation provides an overview of the API endpoints available in Hawk Api.
+# For a more detailed interactive documentation, visit the `/api-doc` route.
 swagger: "2.0"
 info:
   title: Hawk Api

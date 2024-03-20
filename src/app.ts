@@ -21,14 +21,30 @@ import missionsRoutes from './routes/mission/mission';
 import gamesRoutes from './routes/game/game';
 import charactersRoutes from './routes/character/character';
 
+
+/*
+* Imports `swagger-ui-express` to serve Swagger UI documentation in your Express application.
+* */
 const swaggerUi = require('swagger-ui-express');
+
+/*
+* Imports the `yamljs` module. This module is used for loading and parsing YAML files.
+* */
 const YAML = require('yamljs');
+
+
+/**
+ * Loads the Swagger document from a YAML file located at `./src/doc/swagger.yaml`.
+ * This document contains your API's specification, detailing routes, parameters, responses, etc.
+ */
 const swaggerDocument = YAML.load('./src/doc/swagger.yaml');
+
 
 /**
  * Create express instance
  */
 const app = express();
+
 
 /**
  * Setup project launch port
@@ -53,7 +69,7 @@ app.listen(PORT, () => {
   console.log(`server launch on http://localhost:${PORT}`);
 });
 
-// Generate Fixtures
+// Generate Fixtures exemple
 sequelize.sync({ force: true }).then(() => {
   const currentDate = new Date();
   Mission.create({
