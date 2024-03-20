@@ -107,19 +107,20 @@ paths:
       description: This route add user to game by its UUID
       produces:
         - application/json
-      requestBody:
-        description: Create a new pet in the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/definitions/UserSchema'
-        required: true
+      consumes:
+        - application/json
       parameters:
         - in: path
           name: uuid
           type: string
           required: true
           description: UUID of the game to retrieve
+        - in: body
+          name: body
+          description: Create a new pet in the store
+          schema:
+            $ref: '#/definitions/UserSchema'
+          required: true
       responses:
         200:
           description: Successfully add user
@@ -233,7 +234,7 @@ definitions:
     type: object
     properties:
       users:
-        type: object
+        type: array
         items:
           $ref: '#/definitions/CharacterSchema'
   CharacterSchema:

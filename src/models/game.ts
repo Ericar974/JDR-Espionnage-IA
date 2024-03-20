@@ -43,10 +43,11 @@ export default sequelize.define<GameInstance>('Game', {
     defaultValue: () => [],
     allowNull: false,
   },
-  // Optional narrative scenario of the game.
-  scenario: {
-    type: DataTypes.STRING,
-    allowNull: true,
+  // List of missions in the game, stored in a JSONB format for flexibility.
+  missions: {
+    type: DataTypes.JSONB,
+    defaultValue: () => [],
+    allowNull: false,
   },
   // Information about the game master (GM), allowing for structured data storage.
   gm: {

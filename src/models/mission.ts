@@ -27,9 +27,25 @@ export default sequelize.define<MissionInstance>('Mission', {
     allowNull: false,
     unique: true,
   },
+  // Name of the mission
+  name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   // The country where the mission is located. This field is required.
   country: {
     type: DataTypes.STRING,
+    allowNull: false,
+  },
+  // Optional narrative scenario of the mission.
+  scenario: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  // Current status of the mission, restricted to specific enumerated values.
+  status: {
+    type: DataTypes.ENUM('Waiting', 'Playing', 'Completed'),
+    defaultValue: 'Waiting',
     allowNull: false,
   },
   // Specific place of the mission within the country. This field is also required.

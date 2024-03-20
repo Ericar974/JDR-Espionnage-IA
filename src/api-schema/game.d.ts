@@ -1,3 +1,4 @@
+import { MissionSchema } from './mission';
 import { UserSchema } from './user';
 
 /*
@@ -16,8 +17,8 @@ export interface GameSchema {
   // Array of user participants in the game, structured according to the UserSchema.
   users: UserSchema[];
 
-  // Narrative scenario of the game; optional and can be null.
-  scenario: string | null;
+  // Array of Multiple narrative scenario of the game; structured according to the MissionSchema.
+  missions: MissionSchema[];
 
   // The game master (GM) guiding the game, represented by a UserSchema.
   gm: UserSchema;

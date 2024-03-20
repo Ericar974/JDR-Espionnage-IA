@@ -43,7 +43,11 @@ router.post(
       const { user } = req.body; // Assuming 'users' is needed to create a game
 
       // Create a new game instance
-      const game: GameSchema = await Game.create({ gm: user, users: [] });
+      const game: GameSchema = await Game.create({
+        gm: user,
+        users: [],
+        missions: [],
+      });
 
       // Respond with the created game object
       res.json(game.id);
