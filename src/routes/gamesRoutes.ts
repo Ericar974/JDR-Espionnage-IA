@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express';
+import { globalAgent } from 'http';
 import { CharacterSchema } from '../api-schema/character.t';
 import { GetApiError } from '../api-schema/error.t';
 import { GameSchema } from '../api-schema/game.t';
+import { UserSchema } from '../api-schema/user.t';
 import Game from '../models/game';
 
 const router = express.Router();
@@ -69,7 +71,11 @@ router.get(
 router.put(
   '/:uuid/addUser',
   async (
-    req: Request,
+    req: Request<
+      any,
+      String | null | GameSchema | GetApiError,
+      { user: UserSchema }
+    >,
     res: Response<String | null | GameSchema | GetApiError>
   ) => {
     try {
@@ -79,19 +85,23 @@ router.put(
       // Find the game by its UUID
       const game = await Game.findOne({ where: { id: uuid } });
 
+      // If no game is found, respond with a 404
       if (!game) {
-        // If no game is found, respond with a 404
         return res.status(404).json({ message: 'Game not found.' });
       }
 
+      // If empty input
       if (!user || !user.id || !user.character) {
-        // If empty input
         return res.status(404).json({ message: 'Empty input' });
       }
 
-      const users = game.users;
-      users.push(user);
-      game.set('users', users);
+      // Already user
+      if (game.users.find((item) => item.id === user.id)) {
+        return res.status(404).json({ message: 'User already registered.' });
+      }
+
+      game.users = [...game.users, user];
+      await game.save();
 
       // Respond with the found game object
       res.json(game);

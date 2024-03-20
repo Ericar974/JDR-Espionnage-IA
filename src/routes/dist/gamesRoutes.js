@@ -35,6 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 exports.__esModule = true;
 var express_1 = require("express");
 var game_1 = require("../models/game");
@@ -107,36 +114,41 @@ router.get('/:uuid', function (req, res) { return __awaiter(void 0, void 0, void
  * @returns {GameSchema[]} Array of Mission objects.
  */
 router.put('/:uuid/addUser', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var uuid, user, game, users, error_3;
+    var uuid, user_1, game, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
+                _a.trys.push([0, 3, , 4]);
                 uuid = req.params.uuid;
-                user = req.body.user;
+                user_1 = req.body.user;
                 return [4 /*yield*/, game_1["default"].findOne({ where: { id: uuid } })];
             case 1:
                 game = _a.sent();
+                // If no game is found, respond with a 404
                 if (!game) {
-                    // If no game is found, respond with a 404
                     return [2 /*return*/, res.status(404).json({ message: 'Game not found.' })];
                 }
-                if (!user || !user.id || !user.character) {
-                    // If empty input
+                // If empty input
+                if (!user_1 || !user_1.id || !user_1.character) {
                     return [2 /*return*/, res.status(404).json({ message: 'Empty input' })];
                 }
-                users = game.users;
-                users.push(user);
-                game.set('users', users);
+                // Already user
+                if (game.users.find(function (item) { return item.id === user_1.id; })) {
+                    return [2 /*return*/, res.status(404).json({ message: 'User already registered.' })];
+                }
+                game.users = __spreadArrays(game.users, [user_1]);
+                return [4 /*yield*/, game.save()];
+            case 2:
+                _a.sent();
                 // Respond with the found game object
                 res.json(game);
-                return [3 /*break*/, 3];
-            case 2:
+                return [3 /*break*/, 4];
+            case 3:
                 error_3 = _a.sent();
                 console.error('Error fetching game by UUID:', error_3);
                 res.status(500).json({ message: 'Error fetching game by UUID.' });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
