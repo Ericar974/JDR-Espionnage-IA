@@ -36,6 +36,10 @@ const YAML = require('yamljs');
  * This document contains your API's specification, detailing routes, parameters, responses, etc.
  */
 const swaggerDocument = YAML.load('./src/doc/swagger.yaml');
+import scenariosRoutes from "./routes/scenariosRoutes";
+
+import Scenario from "./models/scenario";
+import {v4 as uuidV4} from "uuid";
 
 /**
  * Create express instance
@@ -50,27 +54,50 @@ const PORT: number = +(process.env.PORT ?? 3000);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
+// logging level low
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
 // Use the imported routes
-app.use('/api/mission', missionsRoutes);
-app.use('/api/game', gamesRoutes);
-app.use('/api/character', charactersRoutes);
-
+app.use('/api/missions', missionsRoutes);
+app.use('/api/games', gamesRoutes);
+app.use('/api/characters', charactersRoutes);
+app.use('/api/scenarios', scenariosRoutes);
 // Add swagger api route
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(PORT, () => {
-  console.log(`server launch on http://localhost:${PORT}`);
+    console.log(`server launch on http://localhost:${PORT}`);
 });
 
-// Generate Fixtures exemple
-sequelize.sync({ force: true }).then(() => {
-  const currentDate = new Date();
-  Mission.create({
-    country: countries.FR,
-    place: 'Eiffel Tower',
-    scenario: 'scenrario de test',
-    date: new Date(
-      currentDate.setTime(currentDate.getTime() + 24 * 3600 * 1000)
-    ),
-  });
-});
+// Generate Fixtures
+sequelize.sync({force: true}).then(async () => {
+        const currentDate = new Date();
+        const idFixturedForMission = "mis-" + uuidV4();
+        const idFixturedForScenario = "sce-" + uuidV4();
+
+    console.log({idFixturedForScenario})
+
+    await   Mission.create({
+        id: idFixturedForMission,
+        name: "Mission 1",
+        country: "fr",
+        scenario: "Scenario 1",
+        status: "Waiting",
+        place: "Place 1",
+        date: currentDate
+
+
+
+        });
+    await   Scenario.create({
+            id: idFixturedForScenario,
+            title: "Scenario 1",
+            description: "Description of Scenario 1",
+            source: "Source of Scenario 1",
+            publishedDate: new Date(),
+            missionId: idFixturedForMission
+        });
+    }
+);

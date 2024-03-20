@@ -1,3 +1,4 @@
+// @ts-ignore
 import express, { Request, Response } from 'express';
 import Mission from '../../models/mission';
 import { GetApiError } from '../../api-schema/error';
