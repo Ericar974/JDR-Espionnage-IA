@@ -24,7 +24,7 @@ export default sequelize.define<GameInstance>('Game', {
     defaultValue: 'Waiting',
     allowNull: false,
   },
-  usersId: {
+  users: {
     type: DataTypes.JSONB,
     defaultValue: () => [],
     allowNull: false,

@@ -1,10 +1,9 @@
+import { UserSchema } from './user.t';
+
 export interface GameSchema {
   id: string | null;
   title: string | null;
   status: 'Waiting' | 'Playing' | 'Completed' | null;
-  usersId: {
-    id: string;
-    agentId: string;
-  };
+  users: UserSchema[];
   scenario: string | null;
 }
