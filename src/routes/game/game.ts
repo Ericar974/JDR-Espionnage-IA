@@ -36,8 +36,12 @@ router.get(
 router.post(
   '/create',
   async (
-    req: Request<any, string | null | GetApiError, { user: UserSchema }>,
-    res: Response<string | null | GetApiError>
+    req: Request<
+      any,
+      { gameId: string | null } | null | GetApiError,
+      { user: UserSchema }
+    >,
+    res: Response<{ gameId: string | null } | null | GetApiError>
   ) => {
     try {
       const { user } = req.body; // Assuming 'users' is needed to create a game
@@ -50,7 +54,9 @@ router.post(
       });
 
       // Respond with the created game object
-      res.json(game.id);
+      res.json({
+        gameId: game.id,
+      });
     } catch (error) {
       console.error('Error creating game:', error);
       res.status(500).json({ message: 'Error creating game.' });

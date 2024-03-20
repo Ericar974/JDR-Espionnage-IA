@@ -7,5 +7,5 @@ export interface UserSchema {
   // Unique identifier for the user.
   id: string;
   // Character details associated with the user.
-  character: CharacterSchema;
+  character: CharacterSchema | null;
 }
